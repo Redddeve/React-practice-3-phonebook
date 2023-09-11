@@ -1,25 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { nanoid } from 'nanoid';
-import { StyledList } from './ContactList.styled';
+import { StyledBtn, StyledItem, StyledList } from './ContactList.styled';
 
-const ContactList = ({ contacts, onFilterInput }) => {
+const ContactList = ({ contacts, deleteContact }) => {
   return (
-    <div>
-      <label htmlFor="filter">Find contacts by name</label>
-      <input type="text" id="filter" onChange={onFilterInput} />
-      <ul>
+    <>
+      <StyledList>
         {contacts.map(cont => (
-          <StyledList key={cont.id} id={cont.id}>
-            {console.log(cont.name)}
+          <StyledItem key={cont.id} id={cont.id}>
             {cont.name}: {cont.number}
-          </StyledList>
+            <StyledBtn onClick={deleteContact} id={cont.id}>
+              Delete
+            </StyledBtn>
+          </StyledItem>
         ))}
-      </ul>
-    </div>
+      </StyledList>
+    </>
   );
 };
 
-ContactList.propTypes = {};
+ContactList.propTypes = {
+  contacts: PropTypes.array.isRequired,
+};
 
 export default ContactList;

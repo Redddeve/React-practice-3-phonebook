@@ -14,35 +14,6 @@ export default class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
-    name: '',
-    number: '',
-  };
-
-  onSubmit = e => {
-    e.preventDefault();
-
-    const { name, number } = this.state;
-    if (name === '') {
-      e.currentTarget.reset();
-      return;
-    }
-
-    this.updateContact(name, number);
-    e.currentTarget.reset();
-  };
-
-  onFormInput = e => {
-    const { name, value } = e.target;
-    this.setState({
-      [name]: value.trim(),
-    });
-  };
-
-  onFilterInput = e => {
-    const { value } = e.target;
-    this.setState({
-      filter: value.trim(),
-    });
   };
 
   updateContact = (name, number) => {
@@ -51,9 +22,29 @@ export default class App extends Component {
       number,
       id: nanoid(),
     };
+    const contExist = this.state.contacts.find(
+      cont =>
+        cont.name.toLowerCase() === name.toLowerCase() || cont.number === number
+    );
+    if (contExist) {
+      alert(`${name} is already in contacts`);
+      return;
+    }
     this.setState(prev => ({
       contacts: [...prev.contacts, contact],
     }));
+  };
+
+  deleteContact = e => {
+    const id = e.target.id;
+    const newArr = this.state.contacts.filter(cont => cont.id !== id);
+    this.setState({ contacts: newArr });
+  };
+
+  updateFilter = filter => {
+    this.setState({
+      filter,
+    });
   };
 
   filterData = (data, filter) => {
@@ -70,13 +61,16 @@ export default class App extends Component {
     return (
       <Wrapper>
         <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.onSubmit} onFormInput={this.onFormInput} />
+        <ContactForm
+          onSubmit={this.onSubmit}
+          updateContact={this.updateContact}
+        />
 
         <h2>Contacts</h2>
-        {/* <Filter /> */}
+        <Filter updateFilter={this.updateFilter} />
         <ContactList
           contacts={filteredData}
-          onFilterInput={this.onFilterInput}
+          deleteContact={this.deleteContact}
         />
       </Wrapper>
     );
