@@ -16,6 +16,22 @@ export default class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const localContacts = JSON.parse(window.localStorage.getItem('Contacts'));
+    if (localContacts?.length) {
+      this.setState({ contacts: localContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      window.localStorage.setItem(
+        'Contacts',
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
+
   updateContact = (name, number) => {
     const contact = {
       name,
